@@ -1,0 +1,739 @@
+<odoo>
+
+    <record id="account_payment_form_inherit" model="ir.ui.view">
+        <field name="name">account.payment.form.inherit</field>
+        <field name="model">account.payment</field>
+        <field name="inherit_id" ref="account.view_account_payment_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='partner_id']" position="after">
+                <field name="is_pdc_payment" invisible="1"/>
+                <field name="is_pdc_payable" invisible="1"/>
+                <field name="is_access_draft" invisible="1"/>
+                <field name="can_be_pdc_payable" invisible="1"/>
+            </xpath>
+            <xpath expr="//button[@name='unmark_as_sent']" position="attributes">
+                <attribute name="attrs">{
+                    'invisible': ['|', '|', '|', '|', ('state', '!=', 'posted'), ('is_move_sent', '=', False),
+                    ('payment_method_code', '!=', 'manual'), ('is_pdc_payment', '=', True), ('is_pdc_payable', '=',
+                    True)]}
+                </attribute>
+            </xpath>
+            <xpath expr="//button[@name='mark_as_sent']" position="attributes">
+                <attribute name="attrs">{
+                    'invisible': ['|', '|', '|', '|', ('state', '!=', 'posted'), ('is_move_sent', '=', True),
+                    ('payment_method_code', '!=', 'manual'), ('is_pdc_payment', '=', True), ('is_pdc_payable', '=',
+                    True)]}
+                </attribute>
+            </xpath>
+            <xpath expr="//button[@name='action_draft']" position="attributes">
+                <attribute name="attrs">{'invisible': ['|', '|', ('state', 'not in', ('posted', 'cancel')),
+                    ('is_pdc_payment', '=', True),('is_pdc_payable', '=', True)]}
+                </attribute>
+                <attribute name="groups">account.group_account_manager</attribute>
+            </xpath>
+            <xpath expr="//button[@name='action_post']" position="after">
+                <button name="action_open_pdc_receivable_bounce_wizard" string="Bounce" type="object"
+                        attrs="{'invisible': ['|',('is_pdc_payment', '=',False),('pdc_state', 'not in',['deposit', 'collected'])]}"/>
+                <button name="action_pdc_receivable_recycled" string="Mark To Recycle" type="object"
+                        attrs="{'invisible': ['|',('is_pdc_payment', '=',False),('pdc_state', '!=','bounced')]}"/>
+                <button name="action_create_pdc_receivable_collection_fees" string="Add Bank Collection Fees"
+                        type="object"
+                        attrs="{'invisible': ['|',('is_pdc_payment', '=',False),('pdc_state', 'not in',['collected'])]}"/>
+                <button name="action_open_pdc_receivable_write_off" string="Write Off Cheque" type="object"
+                        attrs="{'invisible': ['|',('is_pdc_payment', '=',False),('pdc_state', 'not in',['bounced'])]}"/>
+                <button name="action_open_pdc_receivable_cashed_wizard" string="Cashed" type="object"
+                        attrs="{'invisible': ['|','|',('is_pdc_payment', '=',False),('state', '!=','posted'), ('pdc_state', 'not in',['registered', 'bounced'])]}"/>
+                <button name="action_open_pdc_receivable_collect_wizard" string="Collect Bank" type="object"
+                        class="oe_highlight"
+                        attrs="{'invisible': ['|','|',('is_pdc_payment', '=',False),('state', '!=','posted'), ('pdc_state', 'not in',('deposit', 'partially collected'))]}"/>
+				<button name="action_open_pdc_receivable_re_collect_wizard" string="Re-Deposit" type="object" class="oe_highlight"
+                        attrs="{'invisible': ['|','|',('is_pdc_payment', '=',False),('state', '!=','posted'), ('pdc_state', '!=','bounced')]}"/>
+                <button name="action_open_pdc_receivable_re_cheque_wizard" string="Re Cheque" type="object"
+                        class="oe_highlight"
+                        attrs="{'invisible': ['|','|',('is_pdc_payment', '=',False),('state', '!=','posted'), ('pdc_state', '!=','bounced')]}"/>
+                <button name="action_cancel_pdc" string="Cancel Cheque" type="object"
+                        attrs="{'invisible': ['|','|',('is_pdc_payment', '=',False),('state', '!=','posted'), ('pdc_state', '!=','registered')]}"/>
+                <button name="action_draft_pdc_receivable" string="Set Draft" type="object" groups="account.group_account_manager"
+                        attrs="{'invisible': ['|','|',('is_pdc_payment', '=',False),('state', '!=','posted'), ('pdc_state', '!=','registered')]}"/>
+
+                <!-- pdc payable buttons -->
+                <button name="action_open_pdc_payable_delivered_wizard" string="Set Delivered" type="object"
+                        class="oe_highlight"
+                        attrs="{'invisible': ['|','|','|',('is_pdc_payable', '=',False),('state', '!=','posted'), ('pdc_payable_state', '!=','registered'), ('cleared_pdc_payable_move_id', '!=', False)]}"/>
+
+                <button name="action_open_pdc_payable_receive_wizard" string="Set Received" type="object"
+                        class="oe_highlight"
+                        attrs="{'invisible': ['|','|','|',('is_pdc_payable', '=',False),('state', '!=','posted'), ('pdc_payable_state', '!=','bounced'), ('received_pdc_payable_move_id', '!=', False)]}"/>
+
+                <button name="action_open_pdc_payable_clear_wizard" string="Set Cleared" type="object"
+                        class="oe_highlight"
+                        attrs="{'invisible': ['|','|','|',('is_pdc_payable', '=',False),('state', '!=','posted'), ('pdc_payable_state', 'not in',['delivered','bounced']), ('cleared_pdc_payable_move_id', '!=', False)]}"/>
+
+                <button name="action_open_pdc_payable_bounce_wizard" string="Set Bounced" type="object"
+                        attrs="{'invisible': ['|','|','|',('is_pdc_payable', '=',False),('state', '!=','posted'), ('pdc_payable_state', '!=','delivered'), ('bounced_move_id', '!=', False)]}"/>
+                <button name="action_cancel_pdc" string="Cancel Cheque" type="object"
+                        attrs="{'invisible': ['|','|',('is_pdc_payable', '=',False),('state', '!=','posted'), ('pdc_payable_state', '!=','delivered')]}"/>
+
+            </xpath>
+
+            <xpath expr="//field[@name='ref']" position="replace">
+                <label for="pdc_ref" string="Cheque Number" attrs="{'invisible': [('is_pdc_payment', '=', False)]}"/>
+                <div>
+                    <field name="pdc_ref" nolabel="1"
+                           attrs="{'invisible': [('is_pdc_payment', '=', False)], 'required': [('is_pdc_payment', '=', True)],'readonly': [('state', '!=', 'draft')]}"/>
+                </div>
+                <!-- <field name="ref" string="Memo"
+                       attrs="{'invisible': ['|',('is_pdc_payment', '=', True),('is_pdc_payable', '=', True)],'readonly': [('state', '!=', 'draft')]}"/> -->
+                <field name="pdc_ref" string="Cheque No."
+                       attrs="{'invisible': [('is_pdc_payable', '=', False)],'required': [('is_pdc_payable', '=', True)],'readonly': [('state', '!=', 'draft')]}"/>
+                <field name="ref" invisible="1"/>
+                <field name="custom_description" string="Description"
+                       attrs="{'readonly': [('state', '!=', 'draft')],'invisible': [('is_pdc_payment', '=', False)]}"/>
+            </xpath>
+            <xpath expr="//field[@name='ref']" position="after">
+                <field name="pdc_state" attrs="{'invisible': [('deposit_pdc_id', '=', False)]}"/>
+                <field name="deposit_pdc_id" invisible="1" attrs="{'invisible': [('deposit_pdc_id', '=', False)]}"/>
+                <field name="deposit_move_id" invisible="1" attrs="{'invisible': [('deposit_move_id', '=', False)]}"/>
+                <field name="bounced_move_id" invisible="1" attrs="{'invisible': [('bounced_move_id', '=', False)]}"/>
+                <field name="collect_payment_id" invisible="1"
+                       attrs="{'invisible': [('collect_payment_id', '=', False)]}"/>
+                <field name="is_pdc_payment" invisible="1"/>
+                <field name="cleared_pdc_payable_move_id" invisible="1"
+                       attrs="{'invisible': [('cleared_pdc_payable_move_id', '=', False)]}"/>
+                <field name="received_pdc_payable_move_id" invisible="1"
+                     />
+            </xpath>
+            <xpath expr="//group[@name='group2']" position="inside">
+                <field name="journal_type" invisible="1"/>
+                <field name="pdc_bank_id" options="{'no_open': True, 'no_create': True}"
+                       attrs="{'invisible': [('is_pdc_payment', '=', False)],'required': [('is_pdc_payment', '=', True)]}"/>
+                <field name="analytic_account_id" attrs="{'readonly':[('state', '!=', 'draft')]}"/>
+                <field name="due_date" attrs="{'invisible': [('journal_type','!=','bank'),('is_pdc_payment', '=', False)]}"/>
+                <field name="cheque_owner_id" attrs="{'invisible': [('is_pdc_payment', '=', False)]}"
+                       options="{'no_open': True, 'no_create': True}"/>
+                <field name="beneficiary_id" attrs="{'invisible': [('is_pdc_payment', '=', False)]}"/>
+                <field name="cheque_scanning" widget="image"
+                       attrs="{'invisible': [('is_pdc_payment', '=', False), ('is_pdc_payable', '=', False)], 'required': ['|',('is_pdc_payable', '=', True), ('is_pdc_payment', '=', True)], 'readonly': [('pdc_payable_state', '!=', 'draft')]}"/>
+                <field name="pdc_payable_state" invisible="1" readonly="1"
+                       force_save="1"/>
+                <field name="due_date" force_save="1"
+                       attrs="{'invisible': [('is_pdc_payable', '=', False)], 'required': ['|',('is_pdc_payable', '=', True), ('is_pdc_payment', '=', True)], 'readonly': [('state', '!=', 'draft')]}"
+                       string="Due Date"/>
+                <field name="pdc_payable_note"
+                       attrs="{'invisible': [('is_pdc_payable', '=', False)], 'readonly': [('state', '!=', 'draft')]}"
+                       string="PDC Note"/>
+            </xpath>
+
+            <!-- smart button -->
+            <div class="oe_button_box" position="inside">
+                <!-- pdc receivable -->
+                <!-- deposit -->
+                <button class="oe_stat_button" name="action_open_pdc_receivable_deposit"
+                        icon="fa-exchange"
+                        type="object"
+                        attrs="{'invisible': [('pdc_receivable_deposit_count', '=', 0)]}">
+                    <field name="pdc_receivable_deposit_count" string="Deposits" widget="statinfo"/>
+                </button>
+                <!-- bounced in / out -->
+                <button class="oe_stat_button" name="action_open_pdc_receivable_bounced_in_out"
+                        icon="fa-reply"
+                        type="object"
+                        attrs="{'invisible': [('pdc_receivable_bounced_in_out_count', '=', 0)]}">
+                    <field name="pdc_receivable_bounced_in_out_count" string="Bounced Bank Transactions"
+                           widget="statinfo"/>
+                </button>
+                <!-- collected -->
+                <button class="oe_stat_button" name="action_open_pdc_receivable_collected"
+                        icon="fa-university"
+                        type="object"
+                        attrs="{'invisible': [('pdc_receivable_collected_count', '=', 0)]}">
+                    <field name="pdc_receivable_collected_count" string="Collect Bank Transactions" widget="statinfo"/>
+                </button>
+                <!-- write-off -->
+                <button class="oe_stat_button" name="action_open_pdc_receivable_writeoff"
+                        icon="fa-usd"
+                        type="object"
+                        attrs="{'invisible': [('pdc_receivable_writeoff_count', '=', 0)]}">
+                    <field name="pdc_receivable_writeoff_count" string="Write-Off" widget="statinfo"/>
+                </button>
+                <!-- Collection Fees -->
+                <button class="oe_stat_button" name="action_open_pdc_receivable_collection_fees"
+                        icon="fa-usd"
+                        type="object"
+                        attrs="{'invisible': [('pdc_receivable_collection_fees_count', '=', 0)]}">
+                    <field name="pdc_receivable_collection_fees_count" string="Collection Fees" widget="statinfo"/>
+                </button>
+                <!-- recheque -->
+                <button class="oe_stat_button" name="action_open_pdc_receivable_recheque"
+                        icon="fa-refresh"
+                        type="object"
+                        attrs="{'invisible': [('pdc_receivable_recheque_count', '=', 0)]}">
+                    <field name="pdc_receivable_recheque_count" string="Re-Cheque" widget="statinfo"/>
+                </button>
+                <!-- recycled -->
+                <button class="oe_stat_button" name="action_open_pdc_receivable_recycled"
+                        icon="fa-refresh"
+                        type="object"
+                        attrs="{'invisible': [('pdc_receivable_recycled_count', '=', 0)]}">
+                    <field name="pdc_receivable_recycled_count" string="Recycled" widget="statinfo"/>
+                </button>
+                <!-- cashed -->
+                <button class="oe_stat_button" name="action_open_pdc_receivable_cashed"
+                        icon="fa-money"
+                        type="object"
+                        attrs="{'invisible': [('pdc_receivable_cashed_count', '=', 0)]}">
+                    <field name="pdc_receivable_cashed_count" string="Cash Receipt" widget="statinfo"/>
+                </button>
+                <!-- pdc payable -->
+                <!-- delivered -->
+                <button class="oe_stat_button" name="action_open_pdc_payable_delivered_move"
+                        icon="fa-university"
+                        type="object"
+                        attrs="{'invisible': [('pdc_payable_delivered_move_count', '=', 0)]}">
+                    <field name="pdc_payable_delivered_move_count" string="Delivered Move(s)" widget="statinfo"/>
+                </button>
+                <!-- cleared -->
+                <button class="oe_stat_button" name="action_open_pdc_payable_cleared_move"
+                        icon="fa-university"
+                        type="object"
+                        attrs="{'invisible': [('pdc_payable_cleared_move_count', '=', 0)]}">
+                    <field name="pdc_payable_cleared_move_count" string="Cleared Move(s)" widget="statinfo"/>
+                </button>
+                <!-- common pdc receivable / payable -->
+                <!-- bounced -->
+                <button class="oe_stat_button" name="action_open_pdc_receivable_bounced_move"
+                        icon="fa-undo"
+                        type="object"
+                        attrs="{'invisible': [('pdc_receivable_bounced_move_count', '=', 0)]}">
+                    <field name="pdc_receivable_bounced_move_count" string="Bounced Move(s)" widget="statinfo"/>
+                </button>
+                <field name="cheque_payment_id" invisible="1"/>
+                <button class="oe_stat_button" name="action_open_related_pdc"
+                        type="object" icon="fa-envelope-o"
+                        attrs="{'invisible': [('cheque_payment_id', '=', False)]}">
+                    <span>1 PDC</span>
+                </button>
+            </div>
+
+            <xpath expr="//widget[@name='web_ribbon']" position="after">
+                <widget name="web_ribbon" title="Registered"
+                        attrs="{'invisible': ['|','|', ('state', '!=', 'posted'), ('is_pdc_payment', '=', False),('pdc_state', '!=', 'registered')]}"/>
+                <widget name="web_ribbon" bg_color="bg-info" title="Bounced"
+                        attrs="{'invisible': ['|', ('is_pdc_payment', '=', False),('pdc_state', '!=', 'bounced')]}"/>
+                <widget name="web_ribbon" bg_color="bg-danger" title="Cashed"
+                        attrs="{'invisible': ['|', ('is_pdc_payment', '=', False),('pdc_state', '!=', 'cashed')]}"/>
+                <widget name="web_ribbon" bg_color="bg-danger" title="Recycled"
+                        attrs="{'invisible': ['|', ('is_pdc_payment', '=', False),('pdc_state', '!=', 'recycled')]}"/>
+                <widget name="web_ribbon" bg_color="bg-danger" title="Re Chequed"
+                        attrs="{'invisible': ['|', ('is_pdc_payment', '=', False),('pdc_state', '!=', 're_cheque')]}"/>
+                <widget name="web_ribbon" title="Deposit"
+                        attrs="{'invisible': ['|', ('is_pdc_payment', '=', False),('pdc_state', '!=', 'deposit')]}"/>
+                <widget name="web_ribbon" title="Collected"
+                        attrs="{'invisible': ['|', ('is_pdc_payment', '=', False),('pdc_state', '!=', 'collected')]}"/>
+                <widget name="web_ribbon" title="Registered"
+                        attrs="{'invisible': ['|','|', ('state', '!=', 'posted'),('is_pdc_payable', '=', False),('pdc_payable_state', '!=', 'registered')]}"/>
+                <widget name="web_ribbon" bg_color="bg-danger" title="Bounced"
+                        attrs="{'invisible': ['|','|', ('state', '!=', 'posted'),('is_pdc_payable', '=', False),('pdc_payable_state', '!=', 'bounced')]}"/>
+                <widget name="web_ribbon" title="Cleared"
+                        attrs="{'invisible': ['|','|', ('state', '!=', 'posted'),('is_pdc_payable', '=', False),('pdc_payable_state', '!=', 'cleared')]}"/>
+                <widget name="web_ribbon" title="Delivered"
+                        attrs="{'invisible': ['|','|', ('state', '!=', 'posted'),('is_pdc_payable', '=', False),('pdc_payable_state', '!=', 'delivered')]}"/>
+            </xpath>
+        </field>
+    </record>
+
+    <record id="account_payment_pdc_tree_inherit" model="ir.ui.view">
+        <field name="name">account.payment.pdc.tree.inherit</field>
+        <field name="model">account.payment</field>
+        <field name="inherit_id" ref="account.view_account_payment_tree"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='payment_method_line_id']" position="attributes">
+                <attribute name="invisible">1</attribute>
+            </xpath>
+            <xpath expr="//field[@name='partner_id']" position="after">
+                <field name="ref" string="Memo" optional="show"/>
+            </xpath>
+
+        </field>
+    </record>
+
+    <record id="account_payment_search_inherit" model="ir.ui.view">
+        <field name="name">account.payment.search.inherit</field>
+        <field name="model">account.payment</field>
+        <field name="inherit_id" ref="account.view_account_payment_search"/>
+        <field name="arch" type="xml">
+            <xpath expr="//filter[@name='reconciled']" position="after">
+                <separator/>
+                <filter string="PDC Receivable" name="is_pdc_payment" domain="[('is_pdc_payment', '=', True)]"/>
+                <filter string="PDC Payable" name="is_pdc_payable" domain="[('is_pdc_payable', '=', True)]"/>
+            </xpath>
+            <xpath expr="//filter[@name='state']" position="after">
+                <filter string="PDC Receivable Status" name="pdc_state" domain="[]"
+                        context="{'group_by': 'pdc_state'}"/>
+                <filter string="PDC Payable Status" name="pdc_payable_state" domain="[]"
+                        context="{'group_by': 'pdc_payable_state'}"/>
+            </xpath>
+        </field>
+    </record>
+
+    <record id="account_payment_kanban_inherit" model="ir.ui.view">
+        <field name="name">account.payment.kanban.inherit</field>
+        <field name="model">account.payment</field>
+        <field name="inherit_id" ref="account.view_account_payment_kanban"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='state']" position="after">
+                <field name="ref"/>
+            </xpath>
+            <xpath expr="//field[@name='currency_id']" position="after">
+                <br/>
+                <field name="ref"/>
+            </xpath>
+        </field>
+    </record>
+
+    <!-- pdc receivable views -->
+    <record id="account_payment_pdc_receivable_form_inherit_primary" model="ir.ui.view">
+        <field name="name">account.payment.pdc.receivable.form.inherit.primary</field>
+        <field name="model">account.payment</field>
+        <field name="inherit_id" ref="account_payment_form_inherit"/>
+        <field name="priority">80</field>
+        <field name="mode">primary</field>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='state']" position="after">
+                <field name="pdc_state" position="move"/>
+            </xpath>
+            <xpath expr="//field[@name='state']" position="attributes">
+                <attribute name="invisible">1</attribute>
+            </xpath>
+            <xpath expr="//field[@name='pdc_state']" position="attributes">
+                <attribute name="attrs"></attribute>
+                <attribute name="widget">statusbar</attribute>
+                <attribute name="statusbar_visible">registered,deposit,collected</attribute>
+            </xpath>
+            <xpath expr="//field[@name='journal_id']" position="attributes">
+                <attribute name="domain">[('type', '=', 'bank'), ('is_pdc','=',True)]</attribute>
+            </xpath>
+            <xpath expr="//field[@name='partner_bank_id']" position="attributes">
+                <attribute name="invisible">1</attribute>
+            </xpath>
+            <xpath expr="//field[@name='is_internal_transfer']" position="attributes">
+                <attribute name="invisible">1</attribute>
+            </xpath>
+            <xpath expr="//field[@name='payment_type']" position="attributes">
+                <attribute name="invisible">1</attribute>
+            </xpath>
+        </field>
+    </record>
+
+    <record id="account_payment_pdc_receivable_tree_inherit_primary" model="ir.ui.view">
+        <field name="name">account.payment.pdc.receivable.tree.inherit</field>
+        <field name="model">account.payment</field>
+        <field name="priority">80</field>
+        <field name="mode">primary</field>
+        <field name="inherit_id" ref="account_payment_pdc_tree_inherit"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='state']" position="attributes">
+                <attribute name="invisible">1</attribute>
+            </xpath>
+            <xpath expr="//field[@name='ref']" position="attributes">
+                <attribute name="string">Cheque Number</attribute>
+            </xpath>
+            <xpath expr="//field[@name='state']" position="after">
+                <field name="pdc_state"
+                       decoration-success="pdc_state == 'deposit'"
+                       decoration-info="pdc_state == 'collected'"
+                       decoration-warning="pdc_state == 'registered'"
+                       decoration-muted="pdc_state == 'cashed'"
+                       decoration-danger="pdc_state == 'recycled' or pdc_state == 're_cheque'"
+                       widget="badge" string="Status"/>
+            </xpath>
+            <xpath expr="//field[@name='date']" position="after">
+                <field name="due_date"/>
+                <field name="pdc_bank_id" options="{'no_open': True, 'no_create': True}"/>
+            </xpath>
+
+        </field>
+    </record>
+
+    <record id="account_payment_pdc_receivable_search_primary" model="ir.ui.view">
+        <field name="name">account.payment.pdc.receivable.search.primary.inherit</field>
+        <field name="model">account.payment</field>
+        <field name="inherit_id" ref="account_payment_search_inherit"/>
+        <field name="mode">primary</field>
+        <field name="priority">80</field>
+        <field name="arch" type="xml">
+            <xpath expr="//filter[@name='state_posted']" position="after">
+                <separator/>
+                <filter string="Registered" name="is_pdc_registered" domain="[('pdc_state', '=', 'registered')]"/>
+                <filter string="Deposit" name="is_pdc_deposit" domain="[('pdc_state', '=', 'deposit')]"/>
+                <filter string="Collected" name="is_pdc_collect" domain="[('pdc_state', '=', 'collected')]"/>
+                <filter string="Bounced" name="is_pdc_bounced" domain="[('pdc_state', '=', 'bounced')]"/>
+                <filter string="Cashed" name="is_pdc_cashed" domain="[('pdc_state', '=', 'cashed')]"/>
+                <filter string="Recycled" name="is_pdc_recycled" domain="[('pdc_state', '=', 'recycled')]"/>
+                <filter string="Re Cheque" name="is_pdc_re_cheque" domain="[('pdc_state', '=', 're_cheque')]"/>
+                <separator/>
+                <filter string="Today Due Date" name="today_due_date" domain="[('due_date', '=', current_date)]"/>
+                <filter string="Late Due Date" name="late_due_date" domain="[('due_date', '&lt;', current_date)]"/>
+            </xpath>
+            <xpath expr="//filter[@name='state']" position="attributes">
+                <attribute name="invisible">1</attribute>
+            </xpath>
+            <xpath expr="//filter[@name='groupby_date']" position="attributes">
+                <attribute name="string">Creation Date</attribute>
+            </xpath>
+            <xpath expr="//filter[@name='groupby_date']" position="after">
+                <filter string="Due Date" name="groupby_due_date" domain="[]" context="{'group_by': 'due_date'}"/>
+                <filter string="Cheque Owner" name="groupby_cheque_owner" domain="[]"
+                        context="{'group_by': 'cheque_owner_id'}"/>
+            </xpath>
+        </field>
+    </record>
+
+    <record id="account_payment_pdc_receivable_action" model="ir.actions.act_window">
+        <field name="name">PDC Receivable</field>
+        <field name="res_model">account.payment</field>
+        <field name="view_mode">tree,kanban,form,graph</field>
+        <field name="context">{
+            'default_payment_type': 'inbound',
+            'default_partner_type': 'customer',
+            'default_is_pdc_payment': 1,
+            'default_move_journal_types': ('bank', 'cash'),
+
+            }
+        </field>
+        <field name="domain">[('is_pdc_payment', '=', True)]</field>
+        <field name="search_view_id" ref="account_payment_pdc_receivable_search_primary"/>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Register a cheque
+            </p>
+        </field>
+    </record>
+
+    <record id="account_payment_pdc_receivable_action_form" model="ir.actions.act_window.view">
+        <field name="view_mode">form</field>
+        <field name="sequence" eval="4"/>
+        <field name="view_id" ref="account_payment_pdc_receivable_form_inherit_primary"/>
+        <field name="act_window_id" ref="account_payment_pdc_receivable_action"/>
+    </record>
+    <record id="account_payment_pdc_receivable_action_tree" model="ir.actions.act_window.view">
+        <field name="view_mode">tree</field>
+        <field name="sequence" eval="1"/>
+        <field name="view_id" ref="account_payment_pdc_receivable_tree_inherit_primary"/>
+        <field name="act_window_id" ref="account_payment_pdc_receivable_action"/>
+    </record>
+
+    <menuitem id="account_payment_pdc_receivable_cheque_menu" name="PDC Receivable"
+              parent="account.menu_finance_receivables" action="account_payment_pdc_receivable_action" sequence="16"/>
+
+    <record id="account_payment_pdc_receivable_collection_action" model="ir.actions.act_window">
+        <field name="name">PDC Receivable Collection</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">account.payment</field>
+        <field name="view_mode">tree,kanban,form,graph</field>
+        <field name="context">{'create': False, 'edit': False, 'delete': False}</field>
+        <field name="domain">[('move_id.cheque_payment_type', '=', 'collected')]</field>
+    </record>
+
+    <menuitem id="account_payment_pdc_receivable_collection_menu"
+              name="PDC Receivable Collection"
+              parent="account.menu_finance_receivables"
+              action="account_payment_pdc_receivable_collection_action"
+              sequence="16"/>
+
+    <!-- pdc payable views -->
+    <record id="account_payment_pdc_payable_form_inherit_primary" model="ir.ui.view">
+        <field name="name">account.payment.pdc.payable.form.inherit.primary</field>
+        <field name="model">account.payment</field>
+        <field name="inherit_id" ref="account_payment_form_inherit"/>
+        <field name="priority">80</field>
+        <field name="mode">primary</field>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='state']" position="after">
+                <field name="pdc_payable_state" position="move"/>
+            </xpath>
+            <xpath expr="//field[@name='state']" position="attributes">
+                <attribute name="invisible">1</attribute>
+            </xpath>
+            <xpath expr="//field[@name='pdc_payable_state']" position="attributes">
+                <attribute name="attrs"></attribute>
+                <attribute name="widget">statusbar</attribute>
+                <attribute name="statusbar_visible">draft,registered,delivered,cleared</attribute>
+            </xpath>
+            <xpath expr="//field[@name='journal_id']" position="attributes">
+                <attribute name="domain">[('type', '=', 'bank'), ('notes_payable_account_id','!=',False)]</attribute>
+            </xpath>
+            <xpath expr="//field[@name='partner_bank_id'][2]" position="attributes">
+                <attribute name="invisible">1</attribute>
+            </xpath>
+            <xpath expr="//field[@name='is_internal_transfer']" position="attributes">
+                <attribute name="invisible">1</attribute>
+            </xpath>
+            <xpath expr="//field[@name='payment_type']" position="attributes">
+                <attribute name="invisible">1</attribute>
+            </xpath>
+            <xpath expr="//field[@name='partner_id'][2]" position="attributes">
+                <attribute name="string">Issued To</attribute>
+            </xpath>
+            <xpath expr="//field[@name='ref']" position="attributes">
+                <attribute name="string">Cheque No.</attribute>
+            </xpath>
+        </field>
+    </record>
+
+    <record id="account_payment_pdc_payable_tree_inherit_primary" model="ir.ui.view">
+        <field name="name">account.payment.pdc.payable.tree.inherit</field>
+        <field name="model">account.payment</field>
+        <field name="priority">80</field>
+        <field name="mode">primary</field>
+        <field name="inherit_id" ref="account_payment_pdc_tree_inherit"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='state']" position="attributes">
+                <attribute name="invisible">1</attribute>
+            </xpath>
+            <xpath expr="//field[@name='ref']" position="attributes">
+                <attribute name="string">Cheque Number</attribute>
+            </xpath>
+            <xpath expr="//field[@name='state']" position="after">
+                <field name="pdc_payable_state"
+                       decoration-success="pdc_payable_state == 'registered'"
+                       decoration-info="pdc_payable_state == 'cleared'"
+                       decoration-warning="pdc_payable_state == 'draft'"
+                       decoration-muted="pdc_payable_state == 'cashed'"
+                       decoration-danger="pdc_payable_state == 'cancel'"
+                       widget="badge" string="Status"/>
+            </xpath>
+            <xpath expr="//field[@name='partner_id']" position="attributes">
+                <attribute name="string">Issued To</attribute>
+            </xpath>
+            <xpath expr="//field[@name='date']" position="after">
+                <field name="due_date"/>
+            </xpath>
+        </field>
+    </record>
+
+    <record id="account_payment_pdc_payable_search_primary" model="ir.ui.view">
+        <field name="name">account.payment.pdc.payable.search.primary.inherit</field>
+        <field name="model">account.payment</field>
+        <field name="inherit_id" ref="account_payment_search_inherit"/>
+        <field name="mode">primary</field>
+        <field name="priority">80</field>
+        <field name="arch" type="xml">
+            <xpath expr="//filter[@name='state_posted']" position="after">
+                <separator/>
+                <filter string="Draft" name="is_pdc_payable_draft" domain="[('pdc_payable_state', '=', 'draft')]"/>
+                <filter string="Registered" name="is_pdc_payable_registered"
+                        domain="[('pdc_payable_state', '=', 'registered')]"/>
+                <filter string="Cleared" name="is_pdc_payable_cleared"
+                        domain="[('pdc_payable_state', '=', 'cleared')]"/>
+                <filter string="Bounced" name="is_pdc_payable_bounced"
+                        domain="[('pdc_payable_state', '=', 'bounced')]"/>
+                <separator/>
+                <filter string="Today Due Date" name="today_due_date" domain="[('due_date', '=', current_date)]"/>
+                <filter string="Late Due Date" name="late_due_date" domain="[('due_date', '&lt;', current_date)]"/>
+            </xpath>
+            <xpath expr="//filter[@name='state']" position="attributes">
+                <attribute name="invisible">1</attribute>
+            </xpath>
+            <xpath expr="//filter[@name='groupby_date']" position="attributes">
+                <attribute name="string">Reg. Date</attribute>
+            </xpath>
+            <xpath expr="//filter[@name='groupby_date']" position="after">
+                <filter string="Due Date" name="groupby_due_date" domain="[]" context="{'group_by': 'due_date'}"/>
+            </xpath>
+            <xpath expr="//field[@name='partner_id']" position="attributes">
+                <attribute name="string">Issued To</attribute>
+            </xpath>
+            <xpath expr="//filter[@name='pdc_state']" position="attributes">
+                <attribute name="invisible">1</attribute>
+            </xpath>
+            <xpath expr="//filter[@name='pdc_payable_state']" position="attributes">
+                <attribute name="invisible">1</attribute>
+            </xpath>
+            <xpath expr="//filter[@name='is_pdc_payment']" position="attributes">
+                <attribute name="invisible">1</attribute>
+            </xpath>
+            <xpath expr="//filter[@name='is_pdc_payable']" position="attributes">
+                <attribute name="invisible">1</attribute>
+            </xpath>
+            <xpath expr="//filter[@name='inbound_filter']" position="attributes">
+                <attribute name="invisible">1</attribute>
+            </xpath>
+            <xpath expr="//filter[@name='outbound_filter']" position="attributes">
+                <attribute name="invisible">1</attribute>
+            </xpath>
+            <xpath expr="//filter[@name='state_draft']" position="attributes">
+                <attribute name="invisible">1</attribute>
+            </xpath>
+            <xpath expr="//filter[@name='state_posted']" position="attributes">
+                <attribute name="invisible">1</attribute>
+            </xpath>
+            <xpath expr="//filter[@name='state_sent']" position="attributes">
+                <attribute name="invisible">1</attribute>
+            </xpath>
+            <xpath expr="//filter[@name='matched']" position="attributes">
+                <attribute name="invisible">1</attribute>
+            </xpath>
+            <xpath expr="//filter[@name='paymentmethodline']" position="attributes">
+                <attribute name="invisible">1</attribute>
+            </xpath>
+            <xpath expr="//filter[@name='state']" position="attributes">
+                <attribute name="invisible">1</attribute>
+            </xpath>
+            <xpath expr="//filter[@name='transfers_filter']" position="attributes">
+                <attribute name="invisible">1</attribute>
+            </xpath>
+            <xpath expr="//filter[@name='date']" position="attributes">
+                <attribute name="string">Date</attribute>
+            </xpath>
+            <xpath expr="//filter[@name='partner']" position="attributes">
+                <attribute name="string">Issued To</attribute>
+            </xpath>
+        </field>
+    </record>
+
+    <record id="account_payment_pdc_payable_action" model="ir.actions.act_window">
+        <field name="name">PDC Payable</field>
+        <field name="res_model">account.payment</field>
+        <field name="view_mode">tree,kanban,form,graph</field>
+        <field name="context">{
+            'default_payment_type': 'outbound',
+            'default_partner_type': 'supplier',
+            'default_is_pdc_payable': 1,
+            'default_move_journal_types': ('bank', 'cash'),
+
+            }
+        </field>
+        <field name="domain">[('is_pdc_payable', '=', True)]</field>
+        <field name="search_view_id" ref="account_payment_pdc_payable_search_primary"/>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Register a cheque
+            </p>
+        </field>
+    </record>
+
+    <record id="account_payment_pdc_payable_action_form" model="ir.actions.act_window.view">
+        <field name="view_mode">form</field>
+        <field name="sequence" eval="4"/>
+        <field name="view_id" ref="account_payment_pdc_payable_form_inherit_primary"/>
+        <field name="act_window_id" ref="account_payment_pdc_payable_action"/>
+    </record>
+    <record id="account_payment_pdc_payable_action_tree" model="ir.actions.act_window.view">
+        <field name="view_mode">tree</field>
+        <field name="sequence" eval="1"/>
+        <field name="view_id" ref="account_payment_pdc_payable_tree_inherit_primary"/>
+        <field name="act_window_id" ref="account_payment_pdc_payable_action"/>
+    </record>
+
+    <menuitem id="account_payment_pdc_payable_cheque_menu" name="PDC Payable"
+              parent="account.menu_finance_payables" action="account_payment_pdc_payable_action" sequence="30"/>
+    <menuitem id="account_payment_money_transfer" name="Money Transfer"
+              parent="account.menu_finance_entries" action="account_payment_pdc_payable_action" sequence="3"/>
+
+    <record id="account.action_account_payments_payable" model="ir.actions.act_window">
+        <field name="domain">[('is_pdc_payable', '=', False),('payment_type', '=', 'outbound'),
+            ('move_id.cheque_payment_id', '=',False)]
+        </field>
+    </record>
+
+    <record id="account_payment_inherit_form" model="ir.ui.view">
+        <field name="name">account.payment.form</field>
+        <field name="model">account.payment</field>
+        <field name="inherit_id" ref="account.view_account_payment_form"/>
+        <field name="priority">81</field>
+        <field name="mode">primary</field>
+        <field name="arch" type="xml">
+
+            <xpath expr="//field[@name='journal_id']" position="after">
+                <field name="payment_amount" attrs="{'readonly':[('state','!=','draft')]}"/>
+                <field name="advance_amount" attrs="{'readonly':[('state','!=','draft')]}"/>
+            </xpath>
+             <xpath expr="//field[@name='ref']" position="after">
+                 <field name="journal_type" invisible="1"/>
+                <field name="exchange_office_id"
+                attrs="{'invisible': ['|',('payment_type', '!=', 'inbound'),('journal_type', '!=', 'bank')]}"/>
+            </xpath>
+
+        </field>
+    </record>
+
+    <record id="action_account_payments" model="ir.actions.act_window">
+        <field name="name">Payments</field>
+        <field name="res_model">account.payment</field>
+        <field name="view_mode">tree,kanban,form,graph</field>
+        <field name="context">{
+            'default_payment_type': 'inbound',
+            'default_partner_type': 'customer',
+            'search_default_inbound_filter': 1,
+            'default_move_journal_types': ('bank', 'cash'),
+            }
+        </field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Register a payment
+            </p>
+            <p>
+                Payments are used to register liquidity movements. You can process those payments by your own means or
+                by using installed facilities.
+            </p>
+        </field>
+    </record>
+
+    <record id="account_payment_form_view_action" model="ir.actions.act_window.view">
+        <field name="sequence" eval="2"/>
+        <field name="view_mode">form</field>
+        <field name="view_id" ref="account_payment_inherit_form"/>
+        <field name="act_window_id" ref="action_account_payments"/>
+    </record>
+    <record id="account_payment_tree_view_action" model="ir.actions.act_window.view">
+        <field name="sequence" eval="1"/>
+        <field name="view_mode">tree</field>
+        <field name="view_id" ref="account.view_account_payment_tree"/>
+        <field name="act_window_id" ref="action_account_payments"/>
+    </record>
+    <record id="action_account_payments_payable" model="ir.actions.act_window">
+        <field name="name">Payments</field>
+        <field name="res_model">account.payment</field>
+        <field name="view_mode">tree,kanban,form,graph</field>
+        <field name="context">{
+            'default_payment_type': 'outbound',
+            'default_partner_type': 'supplier',
+            'search_default_outbound_filter': 1,
+            'default_move_journal_types': ('bank', 'cash'),
+            }
+        </field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Register a payment
+            </p>
+            <p>
+                Payments are used to register liquidity movements. You can process those payments by your own means or
+                by using installed facilities.
+            </p>
+        </field>
+    </record>
+
+    <record id="account_payment_tree_view_action_supplier" model="ir.actions.act_window.view">
+        <field name="sequence" eval="1"/>
+        <field name="view_mode">tree</field>
+        <field name="view_id" ref="account.view_account_supplier_payment_tree"/>
+        <field name="act_window_id" ref="action_account_payments_payable"/>
+    </record>
+    <record id="account_payment_form_supplier_view_action" model="ir.actions.act_window.view">
+        <field name="sequence" eval="2"/>
+        <field name="view_mode">form</field>
+        <field name="view_id" ref="account_payment_inherit_form"/>
+        <field name="act_window_id" ref="action_account_payments_payable"/>
+    </record>
+
+
+    <menuitem id="account.menu_action_account_payments_receivable" parent='account.menu_finance_receivables'
+              action="action_account_payments"
+              sequence="15"/>
+    <menuitem id="account.menu_action_account_payments_payable"
+              parent='account.menu_finance_payables'
+              action="action_account_payments_payable"
+              sequence="15"/>
+
+</odoo>

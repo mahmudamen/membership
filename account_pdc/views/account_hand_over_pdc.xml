@@ -1,0 +1,102 @@
+<odoo>
+    <record id="account_hand_over_pdc_form" model="ir.ui.view">
+        <field name="name">account.hand.over.pdc.form</field>
+        <field name="model">account.hand.over.pdc</field>
+        <field name="arch" type="xml">
+            <form string="Hand Over PDC Form">
+                <header>
+                    <button name="action_submit" states="draft" type="object" string="Hand Over" class="btn-primary"/>
+                    <button name="action_reset_draft" states="reject" type="object" string="Set Draft"/>
+                    <button name="action_approve" type="object" string="Approve"
+                            attrs="{'invisible': ['|',('state', '!=', 'waiting_approve'),('can_approve', '=', False)]}"
+                            class="btn-primary"/>
+                    <button name="%(account_pdc.account_hand_over_reject_action)s"
+                            attrs="{'invisible': ['|',('state', '!=', 'waiting_approve'),('can_approve', '=', False)]}"
+                            type="action" string="Reject"/>
+                    <button name="action_open_pdc_receivable" type="object" string="View Related PDC"
+                            attrs="{'invisible': [('payment_ids', '=', [])]}"/>
+                    <field name="state" widget="statusbar" statusbar_visible="draft,waiting_approve,hand_over"/>
+                </header>
+                <sheet>
+                    <div class="oe_title">
+                        <h1>
+                            <field name="name" readonly="1"/>
+                        </h1>
+                    </div>
+                    <group>
+                        <group>
+                            <field name="user_from_id" widget="many2one_avatar_user" domain="[('share', '=', False)]"
+                                   attrs="{'readonly': [('state', '!=', 'draft')]}"/>
+                            <field name="user_to_id" widget="many2one_avatar_user"
+                                   attrs="{'readonly': [('state', '!=', 'draft')]}"/>
+                            <field name="date" attrs="{'readonly': [('state', '!=', 'draft')]}"/>
+                        </group>
+                        <group>
+                            <field name="payment_ids" widget="many2many_tags" options="{'no_create': True}"
+                                   attrs="{'readonly': [('state', '!=', 'draft')]}" context="{'appear_ref':1}"/>
+                            <field name="can_approve" invisible="1"/>
+                            <field name="company_id" groups="base.group_multi_company" options="{'no_create': True}"/>
+                        </group>
+                    </group>
+                </sheet>
+                <div class="oe_chatter">
+                    <field name="message_follower_ids"/>
+                    <field name="activity_ids"/>
+                    <field name="message_ids"/>
+                </div>
+            </form>
+        </field>
+    </record>
+
+    <record id="account_hand_over_pdc_tree" model="ir.ui.view">
+        <field name="name">account.hand.over.pdc.tree</field>
+        <field name="model">account.hand.over.pdc</field>
+        <field name="arch" type="xml">
+            <tree string="Hand Over PDC tree">
+                <field name="name"/>
+                <field name="user_from_id" widget="many2one_avatar_user"/>
+                <field name="user_to_id" widget="many2one_avatar_user"/>
+                <field name="date"/>
+                <field name="payment_ids" widget="many2many_tags" context="{'appear_ref':1}"/>
+                <field name="state" widget="badge" decoration-info="state == 'draft'"
+                       decoration-warning="state == 'waiting_approve'" decoration-success="state == 'hand_over'"/>
+            </tree>
+        </field>
+    </record>
+
+    <record id="account_hand_over_pdc_search" model="ir.ui.view">
+        <field name="name">account.hand.over.pdc.search</field>
+        <field name="model">account.hand.over.pdc</field>
+        <field name="arch" type="xml">
+            <search string="Hand Over PDC Search">
+                <field name="name"/>
+                <field name="user_from_id"/>
+                <field name="user_to_id"/>
+                <field name="payment_ids" filter_domain="['|', '|', ('payment_ids.name', 'ilike', self), ('payment_ids.ref', 'ilike', self), ('payment_ids', 'ilike', self)]"/>
+                <separator/>
+                <filter string="My Hand Over" name="my_hand_over"
+                        domain="['|',('user_from_id', '=', uid), ('user_to_id', '=', uid)]"/>
+                <separator/>
+                <filter string="Date" name="filter_date" date="date"/>
+                <separator/>
+                <group expand="0" string="Group By">
+                    <filter string="From" name="user_from" domain="[]" context="{'group_by': 'user_from_id'}"/>
+                    <filter name="user_to" string="To" domain="[]" context="{'group_by': 'user_to_id'}"/>
+                    <filter string="Date" name="order_month" domain="[]" context="{'group_by': 'date'}"/>
+                    <filter string="Status" name="state_group" domain="[]" context="{'group_by': 'state'}"/>
+                    <filter string="PDC" name="payment_group" domain="[]" context="{'group_by': 'payment_ids'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <record id="account_hand_over_pdc_action" model="ir.actions.act_window">
+        <field name="name">PDC Hand Over</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">account.hand.over.pdc</field>
+        <field name="view_mode">tree,form</field>
+    </record>
+
+    <menuitem id="account_hand_over_pdc_menu" name="PDC Hand Over" parent="account.menu_finance_receivables"
+              action="account_hand_over_pdc_action" sequence="17"/>
+</odoo>

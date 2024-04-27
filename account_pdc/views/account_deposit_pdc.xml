@@ -1,0 +1,77 @@
+<odoo>
+    <record id="account_deposit_pdc_form" model="ir.ui.view">
+        <field name="name">account.deposit.pdc.form</field>
+        <field name="model">account.deposit.pdc</field>
+        <field name="arch" type="xml">
+            <form string="Deposit PDC Form">
+                <header>
+                    <button name="action_deposit" states="draft" type="object" string="Deposit" class="btn-primary"/>
+                    <field name="state" widget="statusbar" statusbar_visible="draft,deposit"/>
+                </header>
+                <sheet>
+                    <div class="oe_button_box" name="button_box">
+                        <button name="button_open_journal_entry" type="object" class="oe_stat_button" icon="fa-bars">
+                                Journal Entry
+                            </button>
+                    </div>
+                    <div class="oe_title">
+                        <h1>
+                            <field name="name" readonly="1"/>
+                        </h1>
+                    </div>
+                    <group>
+                        <group>
+                            <field name="bank_journal_id" options="{'no_create': True, 'no_open': True}"
+                                   attrs="{'readonly': [('state', '!=', 'draft')]}"/>
+                            <field name="deposit_date" attrs="{'readonly': [('state', '!=', 'draft')]}"/>
+                        </group>
+                    </group>
+                    <notebook>
+                        <page string="PDC Receivable" name="pdc_receivable">
+                            <field name="payment_ids" attrs="{'invisible': [('state', '!=', 'draft')]}"
+                                   options="{'no_create': True}" widget="many2many"
+                                   context="{'tree_view_ref': 'account_pdc.account_payment_pdc_receivable_tree_inherit_primary', 'form_view_ref': 'account_pdc.account_payment_pdc_receivable_form_inherit_primary'}"/>
+
+                            <field name="payment_deposit_ids" readonly="1"
+                                   attrs="{'invisible': [('state', '=', 'draft')]}"
+                                   context="{'tree_view_ref': 'account_pdc.account_payment_pdc_receivable_tree_inherit_primary', 'form_view_ref': 'account_pdc.account_payment_pdc_receivable_form_inherit_primary'}"/>
+                        </page>
+                    </notebook>
+                </sheet>
+                <div class="oe_chatter">
+                    <field name="message_follower_ids"/>
+                    <field name="activity_ids"/>
+                    <field name="message_ids"/>
+                </div>
+            </form>
+        </field>
+    </record>
+
+    <record id="account_deposit_pdc_tree" model="ir.ui.view">
+        <field name="name">account.deposit.pdc.tree</field>
+        <field name="model">account.deposit.pdc</field>
+        <field name="arch" type="xml">
+            <tree string="Deposit PDC Tree">
+                <field name="name"/>
+                <field name="bank_journal_id" optional="show"/>
+                <field name="deposit_date" optional="show"/>
+                <field name="payment_ids" optional="hide"/>
+                <field name="state" decoration-success="state == 'deposit'" decoration-info="state == 'draft'"
+                       widget="badge"/>
+            </tree>
+        </field>
+    </record>
+
+    <record id="account_deposit_pdc_action" model="ir.actions.act_window">
+        <field name="name">Deposit PDC</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">account.deposit.pdc</field>
+        <field name="view_mode">tree,form</field>
+    </record>
+
+    <menuitem id="account_deposit_pdc_menu"
+              name="Deposit PDC"
+              parent="account.menu_finance_receivables"
+              action="account_deposit_pdc_action"
+              sequence="18"/>
+</odoo>

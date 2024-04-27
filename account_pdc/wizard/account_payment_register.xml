@@ -1,0 +1,69 @@
+<odoo>
+    <record id="account_payment_register_form_primary_inherit" model="ir.ui.view">
+        <field name="name">account.payment.register.form.primary.inherit</field>
+        <field name="model">account.payment.register</field>
+        <field name="inherit_id" ref="account.view_account_payment_register_form"/>
+        <field name="mode">primary</field>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='journal_id']" position="attributes">
+<!--                <attribute name="domain">[('company_id', '=', company_id), ('type', '=', 'cash')]</attribute>-->
+                 <attribute name="domain">[('company_id', '=', company_id)]</attribute>
+            </xpath>
+            <xpath expr="//field[@name='amount']" position="attributes">
+                <attribute name="force_save">1</attribute>
+                <attribute name="readonly">0</attribute>
+            </xpath>
+            <xpath expr="//field[@name='currency_id']" position="attributes">
+                <attribute name="force_save">1</attribute>
+                <attribute name="readonly">0</attribute>
+            </xpath>
+        </field>
+    </record>
+
+    <record id="account_payment_register_form_inherit" model="ir.ui.view">
+        <field name="name">account.payment.register.form.inherit</field>
+        <field name="model">account.payment.register</field>
+        <field name="inherit_id" ref="account.view_account_payment_register_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='journal_id']" position="after">
+                <field name="is_pdc_payment" invisible="1"/>
+                <field name="can_be_pdc_payable" invisible="1"/>
+                <field name="is_pdc_payable" attrs="{'invisible': [('can_be_pdc_payable', '=', False)]}"/>
+            </xpath>
+            <xpath expr="//field[@name='payment_date']" position="replace">
+                <label for="payment_date" string="Created Date"
+                       attrs="{'invisible': [('is_pdc_payment', '=', False)]}"/>
+                <div>
+                    <field name="payment_date" readonly="1" force_save="1" nolabel="1"
+                           attrs="{'invisible': [('is_pdc_payment', '=', False)]}"/>
+                </div>
+                <field name="payment_date" attrs="{'invisible': [('is_pdc_payable', '=', False)]}" string="Reg. Date"/>
+                <field name="payment_date" attrs="{'invisible': ['|',('is_pdc_payment', '=', True), ('is_pdc_payable','=',True)]}"/>
+            </xpath>
+            <xpath expr="//field[@name='communication']" position="replace">
+<!--                <label for="cheque_number" string="Cheque Number"-->
+<!--                       attrs="{'invisible': [('is_pdc_payment', '=', False)], 'required': [('is_pdc_payment', '=', True)]}"/>-->
+<!--                <div>-->
+<!--                    <field name="cheque_number" nolabel="1" attrs="{'invisible': [('is_pdc_payment', '=', False)], 'required': [('is_pdc_payment', '=', True)]}"/>-->
+<!--                </div>-->
+                <field name="cheque_number"
+                       attrs="{'invisible': ['|','|','|', ('can_edit_wizard', '=', False),('is_pdc_payment', '=', False), ('is_pdc_payable','=',True),'&amp;', ('can_group_payments', '=', True), ('group_payment', '=', False)],'required': [('is_pdc_payment', '=', True)]}"/>
+                <field name="cheque_number" attrs="{'invisible': [('is_pdc_payable','=',False)],'required': [('is_pdc_payable','=',True)]}" string="Cheque No."/>
+            </xpath>
+            <xpath expr="//group[@name='group2']" position="inside">
+                <field name="pdc_bank_id" attrs="{'invisible': [('is_pdc_payment', '=', False)], 'required': [('is_pdc_payment', '=', True)]}"
+                       options="{'no_open': True, 'no_create': True}"/>
+                <field name="due_date" attrs="{'invisible': [('is_pdc_payment', '=', False)], 'required': [('is_pdc_payment', '=', True)]}"/>
+                <field name="beneficiary_id" attrs="{'invisible': [('is_pdc_payment', '=', False)], 'required': [('is_pdc_payment', '=', True)]}" options="{'no_open': True, 'no_create': True}"/>
+                <field name="cheque_owner_id" attrs="{'invisible': [('is_pdc_payment', '=', False)], 'required': [('is_pdc_payment', '=', True)]}" options="{'no_open': True, 'no_create': True}"/>
+                <field name="cheque_scanning" widget="image" attrs="{'invisible': [('is_pdc_payment', '=', False), ('is_pdc_payable', '=', False)], 'required': [('is_pdc_payment', '=', True)]}"/>
+            </xpath>
+            <xpath expr="//field[@name='journal_id']" position="after">
+                <field name="due_date" attrs="{'invisible': [('is_pdc_payable', '=', False)], 'required': [('is_pdc_payable', '=', True)]}" string="Due Date"/>
+                <field name="pdc_payable_note" attrs="{'invisible': [('is_pdc_payable', '=', False)]}" string="Notes"/>
+            </xpath>
+        </field>
+    </record>
+
+
+</odoo>

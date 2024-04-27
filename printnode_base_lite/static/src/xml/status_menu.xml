@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<templates xml:space="preserve">
+
+    <t t-name="printnode_base.StatusMenu" owl="1">
+        <div class="PrintnodeStatusMenu dropdown">
+            <a class="PrintnodeStatusMenu_toggler dropdown-toggle o-no-caret o-dropdown--narrow" href="#" title="Direct Print Client Status" role="button" data-toggle="dropdown" aria-expanded="false" aria-haspopup="true" t-on-click="_onClickDropdownToggle">
+                <i class="PrintnodeStatusMenu_icon fa fa-print" role="img" aria-label="Direct Print Client Status" />
+            </a>
+
+            <div class="PrintnodeStatusMenu_dropdownMenu dropdown-menu dropdown-menu-right" role="menu">
+                <t t-if="state.printnodeEnabled">
+                    <!-- Loader -->
+                    <t t-if="!state.loaded">
+                        <i class="PrintnodeStatusMenu_loading fa fa-circle-o-notch fa-spin"/>
+                    </t>
+
+                    <t t-if="state.loaded">
+                        <t t-if="state.devices">
+                            <h5>Default Devices</h5>
+                            <div class="o_printnode_status_menu_devices">
+                                <div id="printnodeDefaultDevices">
+                                    <t t-foreach="state.devices" t-as="devices_of_type" t-key="devices_of_type[0]">
+                                        <t t-foreach="devices_of_type[1]" t-as="device" t-key="device.label">
+                                            <div>
+                                                <b><t t-esc="device.label" />: </b>
+                                                <t t-if="device.id">
+                                                    <t t-esc="device.name" />
+                                                </t>
+                                                <t t-else="">
+                                                    Device isn't set
+                                                </t>
+                                            </div>
+                                        </t>
+                                    </t>
+                                </div>
+                            </div>
+                        </t>
+
+                        <t t-if="state.isManager">
+                            <hr />
+
+                            <h5>Accounts Information</h5>
+
+                            <!-- Printing stats -->
+                            <t t-if="state.isManager">
+                                <div class="o_printnode_status_menu_limits">
+                                    <t t-foreach="state.limits" t-as="limit" t-key="limit.account">
+                                        <div>
+                                            <t t-if="limit.error">
+                                                <b><t t-esc="limit.account"/></b>: Something went wrong. Check the details on the Direct Print / Settings page
+                                            </t>
+                                            <t t-elif="limit.limits">
+                                                <b><t t-esc="limit.account"/></b>: <t t-esc="limit.printed"/>/<t t-esc="limit.limits"/> printed
+                                            </t>
+                                            <t t-else="">
+                                                <b><t t-esc="limit.account"/></b>: Not Available
+                                                <i class="fa fa-info-circle" title="Number of printed documents and plan limits are unavailable (most likely because this account is a child PrintNode account)" data-toggle="tooltip"></i>
+                                            </t>
+                                        </div>
+                                    </t>
+
+                                    <t t-if="!state.limits.length">
+                                        <span>No Direct Print accounts added</span>
+                                    </t>
+                                </div>
+
+                                <hr />
+                            </t>
+
+                            <!-- Upgrade to PRO -->
+                            <a class="btn btn-danger mt-2" role="button" style="text-transform: uppercase;" target="_blank" href="https://apps.odoo.com/apps/modules/15.0/printnode_base/">
+                                Upgrade to PRO Now
+                            </a>
+
+                            <!-- Rate Us block -->
+                            <div class="PrintnodeStatusMenu_rate_us">
+                                <a t-att-href="state.rateUsURL" target="_blank">Rate Us <i class="fa fa-thumbs-o-up"></i></a>
+                            </div>
+                        </t>
+                    </t>
+                </t>
+
+                <t t-if="!state.printnodeEnabled">
+                    <div class="alert alert-danger mb-0" role="alert">
+                        <h5>Direct Print module is disabled</h5>
+                        <p>
+                            Please enable it in the <strong>Direct Print / Configuration / Settings</strong>
+                            and/or <strong>User Settings / Preferences</strong>.
+                        </p>
+                    </div>
+                </t>
+            </div>
+        </div>
+    </t>
+
+</templates>

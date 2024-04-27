@@ -1,0 +1,57 @@
+<odoo>
+    <record id="account_payment_pdc_collect_form" model="ir.ui.view">
+        <field name="name">account.payment.pdc.collect.form</field>
+        <field name="model">account.payment.pdc.collect</field>
+        <field name="arch" type="xml">
+            <form string="Payment Collect Wizard">
+                <group>
+                    <field name="collect_date" invisible="context.get('re_collect', False)" string="Collect Date"/>
+                    <field name="collect_date" invisible="not context.get('re_collect', False)"
+                           string="Re-Deposit Date"/>
+                    <field name="payment_id" invisible="1"/>
+                    <field name="show_warning"  invisible="1" />
+                    <field name="payment_ref" invisible="1"/>
+                    <field name="company_id" invisible="1"/>
+                    <field name="amount" invisible="1"/>
+                    <field name="collected_amount"  invisible="context.get('re_collect', False)" />
+
+                    <field name="payment_pdc_state" invisible="1"/>
+                    <field name="allowed_partner_ids" invisible="1"/>
+                    <field name="allow_merge_pdc"/>
+                    <field name="partner_id"
+                           domain="[('id', 'in', allowed_partner_ids)]"
+                           attrs="{'invisible': [('allow_merge_pdc', '=', False)]}"/>
+                </group>
+                <group attrs="{'invisible': [('diff_amount', '&lt;=', 0.0)]}">
+                    <group>
+                        <field name="diff_amount" readonly="1" force_save="1" />
+                        <field name="account_id"
+                               attrs="{'invisible': [('diff_amount', '&lt;=', 0.0)],'required': [('diff_amount', '>', 0)]}"/>
+                    </group>
+                    <group>
+                        <field name="diff_ref"
+                               attrs="{'invisible': [('diff_amount', '&lt;=', 0.0)],'required': [('diff_amount', '>', 0)]}"/>
+                    </group>
+                </group>
+                <notebook attrs="{'invisible': [('allow_merge_pdc', '=', False)]}">
+                    <page string="Related PDC">
+                        <field name="related_payment_ids"/>
+                    </page>
+                </notebook>
+                <footer>
+                    <button string="Collect PDC" name="action_collect_pdc" type="object"
+                            invisible="context.get('re_collect', False)" attrs="{'invisible': [('show_warning', '=',False)]}" confirm="Collection date is before due date, Are you sure you want to process this?"
+                            class="oe_highlight"/>
+                    <button string="Collect PDC" name="action_collect_pdc" type="object"
+                            invisible="context.get('re_collect', False)" attrs="{'invisible': [('show_warning', '=',True)]}"
+                            class="oe_highlight"/>
+                    <button string="Re-Deposit PDC" name="action_collect_pdc" type="object"
+                            invisible="not context.get('re_collect', False)"
+                            class="oe_highlight"/>
+                    <button string="Cancel" class="btn btn-secondary" special="cancel"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+
+</odoo>

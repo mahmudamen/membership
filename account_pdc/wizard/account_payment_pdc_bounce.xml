@@ -1,0 +1,35 @@
+<odoo>
+    <record id="account_payment_pdc_bounce_form" model="ir.ui.view">
+        <field name="name">account.payment.pdc.bounce.form</field>
+        <field name="model">account.payment.pdc.bounce</field>
+        <field name="arch" type="xml">
+            <form string="Payment Bounce Wizard">
+                <group>
+                    <field name="payment_id" invisible="1"/>
+                    <field name="payment_ref" invisible="1"/>
+                    <field name="payment_pdc_state" invisible="1"/>
+                    <field name="allowed_partner_ids" invisible="1"/>
+                    <field name="is_pdc_payable" invisible="1"/>
+                    <field name="bounce_date"/>
+                    <field name="allow_merge_pdc" attrs="{'invisible': [('is_pdc_payable', '=', True)]}"/>
+                    <field name="partner_id"
+                           domain="[('id', 'in', allowed_partner_ids)]"
+                           attrs="{'invisible': [('allow_merge_pdc', '=', False)]}"/>
+                </group>
+                <notebook attrs="{'invisible': [('allow_merge_pdc', '=', False)]}">
+                    <page string="Related PDC">
+                        <field name="related_payment_ids"/>
+                    </page>
+                </notebook>
+                <footer>
+                    <button string="Bounce PDC" name="action_bounce_pdc"
+                            type="object"
+                            class="oe_highlight"/>
+                    <button string="Cancel" class="btn btn-secondary"
+                            special="cancel"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+
+</odoo>

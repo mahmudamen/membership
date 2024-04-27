@@ -1,0 +1,26 @@
+<odoo>
+    <record id="account_payment_pdc_writeoff_form" model="ir.ui.view">
+        <field name="name">account.payment.pdc.writeoff.form</field>
+        <field name="model">account.payment.pdc.writeoff</field>
+        <field name="arch" type="xml">
+            <form string="Payment PDC Write off Wizard">
+                <group>
+                    <group>
+                        <field name="account_id" options="{'no_open': True, 'no_create': True}"
+                               required="1"/>
+                    </group>
+                    <group>
+                        <field name="ref"/>
+                        <field name="date"/>
+                    </group>
+                </group>
+                <footer>
+                    <button string="Register Write Off" name="action_register_write_off" type="object"
+                            class="oe_highlight"/>
+                    <button string="Cancel" class="btn btn-secondary" special="cancel"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+
+</odoo>

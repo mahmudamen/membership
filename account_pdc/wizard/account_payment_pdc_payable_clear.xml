@@ -1,0 +1,19 @@
+<odoo>
+    <record id="account_payment_pdc_payable_clear_form" model="ir.ui.view">
+        <field name="name">account.payment.pdc.payable.clear.form</field>
+        <field name="model">account.payment.pdc.payable.clear</field>
+        <field name="arch" type="xml">
+            <form string="Payment Collect Wizard">
+                <group>
+                    <field name="clear_date"/>
+                </group>
+                <footer>
+                    <button string="Clear PDC" name="action_clear_pdc_payable" type="object"
+                            class="oe_highlight"/>
+                    <button string="Cancel" class="btn btn-secondary" special="cancel"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+
+</odoo>

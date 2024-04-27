@@ -1,0 +1,16 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_account_deposit_pdc_readonly,access.account.deposit.pdc.readonly,account_pdc.model_account_deposit_pdc,account.group_account_readonly,1,0,0,0
+access_account_hand_over_pdc_readonly,access.account.hand.over.pdc.readonly,account_pdc.model_account_hand_over_pdc,account.group_account_readonly,1,0,0,0
+access_account_deposit_pdc_billing,access.account.deposit.pdc.billing,account_pdc.model_account_deposit_pdc,account.group_account_invoice,1,1,1,0
+access_account_hand_over_pdc_billing,access.account.hand.over.pdc.billing,account_pdc.model_account_hand_over_pdc,account.group_account_invoice,1,1,1,0
+access_account_deposit_pdc_manager,access.account.deposit.pdc.manager,account_pdc.model_account_deposit_pdc,account.group_account_manager,1,1,1,1
+access_account_hand_over_pdc_manager,access.account.hand.over.pdc.manager,account_pdc.model_account_hand_over_pdc,account.group_account_manager,1,1,1,1
+access_account_payment_cash_manager,access.account.payment.cash.pdc.manager,account_pdc.model_account_payment_cash,account.group_account_invoice,1,1,1,1
+access_account_payment_recheque_manager,access.account.payment.recheque.pdc.manager,account_pdc.model_account_payment_recheque,account.group_account_invoice,1,1,1,1
+access_account_payment_pdc_writeoff_manager,access.account.payment.pdc.writeoff.pdc.manager,account_pdc.model_account_payment_pdc_writeoff,account.group_account_invoice,1,1,1,1
+access_account_payment_pdc_collection_fees_manager,access.account.payment.pdc.collection.fees.pdc.manager,account_pdc.model_account_payment_pdc_collection_fees,account.group_account_invoice,1,1,1,1
+access_account_payment_pdc_collect_manager,access.account.payment.pdc.collect.pdc.manager,account_pdc.model_account_payment_pdc_collect,account.group_account_invoice,1,1,1,1
+access_account_payment_pdc_bounce_manager,access.account.payment.pdc.bounce.pdc.manager,account_pdc.model_account_payment_pdc_bounce,account.group_account_invoice,1,1,1,1
+access_account_payment_pdc_payable_clear_manager,access.account.payment.pdc.payable.clear.pdc.manager,account_pdc.model_account_payment_pdc_payable_clear,account.group_account_invoice,1,1,1,1
+access_account_hand_over_reject_manager,access.account.hand.over.reject.manager,account_pdc.model_account_hand_over_reject,account.group_account_invoice,1,1,1,1
+access_account_payment_pdc_payable_delivered_manager,access.account.payment.pdc.payable.delivered.pdc.manager,account_pdc.model_account_payment_pdc_payable_delivered,account.group_account_invoice,1,1,1,1

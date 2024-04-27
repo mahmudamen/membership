@@ -1,0 +1,183 @@
+# Translation of Odoo Server.
+# This file contains the translation of the following modules:
+# 	* sale_subscription_period_discount
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: Odoo Server 16.0+e\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2023-11-02 10:55+0000\n"
+"PO-Revision-Date: 2023-11-02 10:55+0000\n"
+"Last-Translator: \n"
+"Language-Team: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: \n"
+"Plural-Forms: \n"
+
+#. module: sale_subscription_period_discount
+#. odoo-python
+#: code:addons/sale_subscription_period_discount/models/sale_order_line.py:0
+#, python-format
+msgid ""
+"\n"
+"%s to %s"
+msgstr ""
+"\n"
+"%s الي %s"
+
+#. module: sale_subscription_period_discount
+#: model:ir.model.fields.selection,name:sale_subscription_period_discount.selection__sale_temporal_period_discount__month__4
+msgid "April"
+msgstr "ابريل"
+
+#. module: sale_subscription_period_discount
+#: model:ir.model.fields.selection,name:sale_subscription_period_discount.selection__sale_temporal_period_discount__month__8
+msgid "August"
+msgstr "اغسطس"
+
+#. module: sale_subscription_period_discount
+#: model:ir.model.fields,field_description:sale_subscription_period_discount.field_sale_temporal_period_discount__create_uid
+msgid "Created by"
+msgstr "بواسطة"
+
+#. module: sale_subscription_period_discount
+#: model:ir.model.fields,field_description:sale_subscription_period_discount.field_sale_temporal_period_discount__create_date
+msgid "Created on"
+msgstr "انشاء في"
+
+#. module: sale_subscription_period_discount
+#: model:ir.model.fields,field_description:sale_subscription_period_discount.field_sale_temporal_period_discount__day
+msgid "Day"
+msgstr "يوم"
+
+#. module: sale_subscription_period_discount
+#: model:ir.model.fields.selection,name:sale_subscription_period_discount.selection__sale_temporal_period_discount__month__12
+msgid "December"
+msgstr "ديسمبر"
+
+#. module: sale_subscription_period_discount
+#: model:ir.model.fields,field_description:sale_subscription_period_discount.field_sale_temporal_period_discount__discount
+msgid "Discount (%)"
+msgstr "خصم (%)"
+
+#. module: sale_subscription_period_discount
+#: model:ir.model.fields,field_description:sale_subscription_period_discount.field_sale_temporal_period_discount__display_name
+msgid "Display Name"
+msgstr "الاسم"
+
+#. module: sale_subscription_period_discount
+#: model:ir.model.fields.selection,name:sale_subscription_period_discount.selection__sale_temporal_period_discount__month__2
+msgid "February"
+msgstr "فبراير"
+
+#. module: sale_subscription_period_discount
+#: model:ir.model.fields,field_description:sale_subscription_period_discount.field_sale_temporal_period_discount__from_date
+msgid "From Date"
+msgstr "من تاريخ"
+
+#. module: sale_subscription_period_discount
+#: model:ir.model.fields,field_description:sale_subscription_period_discount.field_sale_temporal_period_discount__id
+msgid "ID"
+msgstr "كود العضوية"
+
+#. module: sale_subscription_period_discount
+#: model:ir.model.fields.selection,name:sale_subscription_period_discount.selection__sale_temporal_period_discount__month__1
+msgid "January"
+msgstr "يناير"
+
+#. module: sale_subscription_period_discount
+#: model:ir.model.fields.selection,name:sale_subscription_period_discount.selection__sale_temporal_period_discount__month__7
+msgid "July"
+msgstr "يوليو"
+
+#. module: sale_subscription_period_discount
+#: model:ir.model.fields.selection,name:sale_subscription_period_discount.selection__sale_temporal_period_discount__month__6
+msgid "June"
+msgstr "يونيو"
+
+#. module: sale_subscription_period_discount
+#: model:ir.model.fields,field_description:sale_subscription_period_discount.field_sale_temporal_period_discount____last_update
+msgid "Last Modified on"
+msgstr "اخر تعديل في"
+
+#. module: sale_subscription_period_discount
+#: model:ir.model.fields,field_description:sale_subscription_period_discount.field_sale_temporal_period_discount__write_uid
+msgid "Last Updated by"
+msgstr "اخر تحديث بواسطة"
+
+#. module: sale_subscription_period_discount
+#: model:ir.model.fields,field_description:sale_subscription_period_discount.field_sale_temporal_period_discount__write_date
+msgid "Last Updated on"
+msgstr "اخر تحديث في"
+
+#. module: sale_subscription_period_discount
+#: model:ir.model.fields.selection,name:sale_subscription_period_discount.selection__sale_temporal_period_discount__month__3
+msgid "March"
+msgstr "مارس"
+
+#. module: sale_subscription_period_discount
+#: model:ir.model.fields.selection,name:sale_subscription_period_discount.selection__sale_temporal_period_discount__month__5
+msgid "May"
+msgstr "مايو"
+
+#. module: sale_subscription_period_discount
+#: model:ir.model.fields,field_description:sale_subscription_period_discount.field_sale_temporal_period_discount__month
+msgid "Month"
+msgstr "الشهر"
+
+#. module: sale_subscription_period_discount
+#: model:ir.model.fields,field_description:sale_subscription_period_discount.field_sale_temporal_period_discount__name
+msgid "Name"
+msgstr "الاسم"
+
+#. module: sale_subscription_period_discount
+#: model:ir.model.fields.selection,name:sale_subscription_period_discount.selection__sale_temporal_period_discount__month__11
+msgid "November"
+msgstr "نوفمبر"
+
+#. module: sale_subscription_period_discount
+#: model:ir.model.fields.selection,name:sale_subscription_period_discount.selection__sale_temporal_period_discount__month__10
+msgid "October"
+msgstr "اكتوبر"
+
+#. module: sale_subscription_period_discount
+#: model:ir.model,name:sale_subscription_period_discount.model_sale_temporal_period_discount
+#: model:ir.model.fields,field_description:sale_subscription_period_discount.field_sale_temporal_recurrence__period_discount_ids
+msgid "Period Discount"
+msgstr "خصم المدة"
+
+#. module: sale_subscription_period_discount
+#: model:ir.model.fields,field_description:sale_subscription_period_discount.field_sale_temporal_period_discount__recurrence_id
+msgid "Recurrence"
+msgstr "تكرار"
+
+#. module: sale_subscription_period_discount
+#: model:ir.model,name:sale_subscription_period_discount.model_sale_temporal_recurrence
+msgid "Sale temporal Recurrence"
+msgstr "بيع التكرار الزمني"
+
+#. module: sale_subscription_period_discount
+#: model:ir.model,name:sale_subscription_period_discount.model_sale_order
+msgid "Sales Order"
+msgstr "امر بيع"
+
+#. module: sale_subscription_period_discount
+#: model:ir.model,name:sale_subscription_period_discount.model_sale_order_line
+msgid "Sales Order Line"
+msgstr "سطر امر البيع"
+
+#. module: sale_subscription_period_discount
+#: model:ir.model.fields.selection,name:sale_subscription_period_discount.selection__sale_temporal_period_discount__month__9
+msgid "September"
+msgstr "سبتمبر"
+
+#. module: sale_subscription_period_discount
+#: model:ir.model.fields,field_description:sale_subscription_period_discount.field_sale_order__start_date
+msgid "Start Date"
+msgstr "تاريخ البدء"
+
+#. module: sale_subscription_period_discount
+#: model:ir.model.fields,help:sale_subscription_period_discount.field_sale_order__start_date
+msgid "The start date indicate when the subscription periods begin."
+msgstr "يشير تاريخ البدء إلى وقت بدء فترات الاشتراك"

@@ -1,0 +1,162 @@
+<?xml version="1.0"?>
+<odoo>
+  <data>
+
+    <!-- Form view -->
+    <record id="printer_form" model="ir.ui.view">
+      <field name="name">print.printer.form</field>
+      <field name="model">print.printer</field>
+      <field name="arch" type="xml">
+	<form string="Printer">
+	  <header>
+	    <button name="spool_test_page" type="object" class="oe_highlight"
+		    string="Print Test Page"/>
+	    <button name="set_user_default" type="object"
+		    string="Set as User Default"
+		    attrs="{'invisible':[('is_user_default','=',True)]}"/>
+	    <button name="clear_user_default" type="object" class="btn-danger"
+		    string="Clear as User Default"
+		    attrs="{'invisible':[('is_user_default','=',False)]}"/>
+	    <button name="set_system_default" type="object"
+		    string="Set as System Default"
+		    groups="base.group_system"
+		    attrs="{'invisible':[('is_default','=',True)]}"/>
+	    <button name="clear_system_default" type="object" class="btn-danger"
+		    string="Clear as System Default"
+		    groups="base.group_system"
+		    attrs="{'invisible':[('is_default','=',False)]}"/>
+	  </header>
+	  <sheet>
+	    <div class="oe_title">
+	      <label for="name" class="oe_edit_only"/>
+	      <h1>
+		<field name="name" placeholder="e.g. Label printer"/>
+	      </h1>
+	      <label for="group_id" class="oe_edit_only"/>
+	      <h2>
+		<field name="group_id" options="{'no_create': True}"/>
+	      </h2>
+	    </div>
+	    <group>
+	      <group name="properties" string="System Properties">
+		<field name="queue"/>
+		<field name="report_type"/>
+		<field name="barcode"/>
+	      </group>
+	      <group name="assignment" string="Assignment">
+		<field name="is_default" readonly="1"/>
+		<field name="is_user_default"/>
+		<field name="is_ephemeral"/>
+		<field name="is_group" invisible="1"/>
+		<field name="user_ids" widget="many2many_tags"/>
+	      </group>
+	    </group>
+	    <notebook attrs="{'invisible':[('is_group','=',False)]}">
+	      <page string="Grouped Printers">
+		<field name="child_ids"
+		       context="{'default_group_id': active_id}"/>
+	      </page>
+	    </notebook>
+	  </sheet>
+	</form>
+      </field>
+    </record>
+
+    <!-- Tree view -->
+    <record id="printer_tree" model="ir.ui.view">
+      <field name="name">print.printer.tree</field>
+      <field name="model">print.printer</field>
+      <field name="arch" type="xml">
+	<tree string="Printers" decoration-bf="is_default or is_user_default">
+	  <field name="full_name"/>
+	  <field name="queue"/>
+	  <field name="report_type"/>
+	  <field name="barcode"/>
+	  <field name="is_default"/>
+	  <field name="is_user_default"/>
+	  <field name="is_ephemeral"/>
+	</tree>
+      </field>
+    </record>
+
+    <!-- Search filter -->
+    <record id="printer_search" model="ir.ui.view">
+      <field name="name">print.printer.search</field>
+      <field name="model">print.printer</field>
+      <field name="arch" type="xml">
+	<search string="Search Printer">
+	  <field name="name" string="Printer"
+		 filter_domain="['|','|',('full_name','ilike',self),
+					 ('queue','ilike',self),
+					 ('barcode','=',self)]"/>
+	  <field name="queue"/>
+	  <field name="group_id"/>
+	  <field name="report_type"/>
+	  <field name="user_ids"/>
+	  <group string="Filters">
+	    <filter name="is_default" string="Is System Default"
+		    domain="[('is_default', '=', True)]"/>
+	  </group>
+	  <group string="Group by...">
+	    <filter name="by_queue" string="Queue" domain="[]"
+		    context="{'group_by':'queue'}"/>
+	    <filter name="by_group_id" string="Printer Group" domain="[]"
+		    context="{'group_by':'group_id'}"/>
+	    <filter name="by_report_type" string="Report Type" domain="[]"
+		    context="{'group_by':'report_type'}"/>
+	  </group>
+	</search>
+      </field>
+    </record>
+
+    <!-- Action window (printers) -->
+    <record id="printer_printer_action" model="ir.actions.act_window">
+      <field name="name">Printers</field>
+      <field name="type">ir.actions.act_window</field>
+      <field name="res_model">print.printer</field>
+      <field name="view_type">form</field>
+      <field name="view_id" ref="printer_tree"/>
+      <field name="domain">[('is_group', '=', False)]</field>
+      <field name="search_view_id" ref="printer_search"/>
+      <field name="help" type="html">
+	<p class="oe_view_nocontent_create">
+	  Click to create a Printer.
+	</p>
+	<p>
+	  Backend processes may print documents and reports directly
+	  to printers connected to the Odoo server.
+	</p>
+      </field>
+    </record>
+
+    <!-- Action window (groups) -->
+    <record id="printer_group_action" model="ir.actions.act_window">
+      <field name="name">Groups</field>
+      <field name="type">ir.actions.act_window</field>
+      <field name="res_model">print.printer</field>
+      <field name="view_type">form</field>
+      <field name="view_id" ref="printer_tree"/>
+      <field name="context">{'default_is_group': True}</field>
+      <field name="domain">[('is_group', '=', True)]</field>
+      <field name="search_view_id" ref="printer_search"/>
+      <field name="help" type="html">
+	<p class="oe_view_nocontent_create">
+	  Click to create a Printer Group.
+	</p>
+	<p>
+	  Backend processes may print documents and reports directly
+	  to printers connected to the Odoo server.
+	</p>
+      </field>
+    </record>
+
+    <!-- Menu items -->
+    <menuitem id="printer_menu" name="Printing"
+	      parent="base.menu_administration" sequence="10"/>
+    <menuitem id="printer_printer_menu" action="printer_printer_action"
+	      parent="printer_menu" sequence="10"/>
+    <menuitem id="printer_group_menu" action="printer_group_action"
+	      parent="printer_menu" sequence="20"/>
+
+  </data>
+</odoo>

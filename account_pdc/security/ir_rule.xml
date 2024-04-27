@@ -1,0 +1,17 @@
+<odoo noupdate="1">
+
+    <record id="account_deposit_pdc_multi_company_rule" model="ir.rule">
+        <field name="name">Deposit PDC Multi Company Rule</field>
+        <field name="model_id" ref="account_pdc.model_account_deposit_pdc"/>
+        <field name="domain_force">['|',('company_id','=',False),('company_id', 'in', company_ids)]</field>
+        <field name="global" eval="1"/>
+    </record>
+
+    <record id="account_hand_over_pdc_multi_company_rule" model="ir.rule">
+        <field name="name">Hand Over PDC Multi Company Rule</field>
+        <field name="model_id" ref="account_pdc.model_account_hand_over_pdc"/>
+        <field name="domain_force">['|',('company_id','=',False),('company_id', 'in', company_ids)]</field>
+        <field name="global" eval="1"/>
+    </record>
+
+</odoo>

@@ -1,0 +1,53 @@
+<odoo>
+
+    <record id="hand_over_pdc_mail_template" model="mail.template">
+        <field name="name">PDC: Hand Over Notify User</field>
+        <field name="model_id" ref="account_pdc.model_account_hand_over_pdc"/>
+        <field name="lang">{{ user.lang }}</field>
+        <field name="auto_delete" eval="True"/>
+        <field name="subject">{{ object.user_from_id.name }} delivered PDC(s) to you</field>
+        <field name="body_html" type="html">
+            <div>
+                Dear,
+                <br/>
+                <t t-out="object.user_from_id.name">ABC</t> is waiting your approval to hand over PDC(s)
+                <t t-out="object.payment_ids.mapped('name')">PDC</t>
+                <br/>
+                <br/>
+                <br/>
+                Thank you,
+                <t t-if="user.signature">
+                    <br/>
+                    <t t-out="user.signature or ''">--<br/>Mitchell Admin</t>
+                </t>
+            </div>
+        </field>
+    </record>
+
+    <record id="hand_over_reject_mail_template" model="mail.template">
+        <field name="name">PDC: Hand Over Notify Reject</field>
+        <field name="model_id" ref="account_pdc.model_account_hand_over_pdc"/>
+        <field name="lang">{{ user.lang }}</field>
+        <field name="auto_delete" eval="True"/>
+        <field name="subject">{{ object.name }} is rejected by {{ user.name }}</field>
+        <field name="body_html" type="html">
+            <div>
+                Dear,
+                <br/>
+                <t t-out="object.name">ABC</t> is rejected
+                <br/>
+                Reject reason:
+                <t t-out="object.reject_reason">Need Extra information</t>
+                <br/>
+                <br/>
+                <br/>
+                Thank you,
+                <t t-if="user.signature">
+                    <br/>
+                    <t t-out="user.signature or ''">--<br/>Mitchell Admin</t>
+                </t>
+            </div>
+        </field>
+    </record>
+
+</odoo>

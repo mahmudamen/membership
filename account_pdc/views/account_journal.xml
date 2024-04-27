@@ -1,0 +1,33 @@
+<odoo>
+
+    <record id="account_journal_form_inherit" model="ir.ui.view">
+        <field name="name">account.journal.form.inherit</field>
+        <field name="model">account.journal</field>
+        <field name="inherit_id" ref="account.view_account_journal_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='type']" position="after">
+                <field name="is_pdc" attrs="{'invisible':[('type', '!=', 'bank')]}"/>
+            </xpath>
+            <xpath expr="//notebook" position="inside">
+                <page name="pdc_receivable_setting" string="PDC Receivable Settings" attrs="{'invisible':[('is_pdc', '=', False)]}">
+                    <group>
+                        <group string="Incoming PDC Account">
+                            <field name="notes_receivable_account_id" attrs="{'required':[('is_pdc', '=', True)]}"/>
+                            <field name="check_under_collection_account_id" attrs="{'required':[('is_pdc', '=', True)]}"/>
+                            <field name="write_off_pdc_account_id" attrs="{'required':[('is_pdc', '=', True)]}"/>
+                        </group>
+                    </group>
+                </page>
+                <page name="pdc_payable_setting" string="PDC Payable Settings" attrs="{'invisible':[('type', '!=', 'bank')]}">
+                    <group>
+                        <group string="Outgoing PDC Account">
+                            <field name="notes_payable_account_id"/>
+                            <field name="pdc_payable_under_collection_account_id"/>
+                        </group>
+                    </group>
+                </page>
+
+            </xpath>
+        </field>
+    </record>
+</odoo>

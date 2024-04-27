@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+<data>
+
+
+
+    <template id="account_reports_country.search_template_extra_options_country">
+        <button type="button" class="o-no-caret btn btn-secondary dropdown-toggle" data-toggle="dropdown">
+            <span class="fa fa-level-down"/> Group By:
+        </button>
+        <div class="dropdown-menu o_filter_menu" role="menu">
+            <a role="menuitem" class="dropdown-item js_account_report_bool_filter" t-if="options.get('filter_account_type') in ['receivable','payable']" title="Country" data-filter="filter_country">Country/Partner</a>
+        </div>
+    </template>
+
+
+
+    <template id="account_reports.search_template">
+        <div class="btn-group dropdown o_account_reports_filter_date" t-if="options.get('date') != None">
+            <t t-call="account_reports.search_template_date_filter"/>
+        </div>
+        <div class="btn-group dropdown o_account_reports_filter_date_cmp" t-if="options.get('comparison') != None">
+            <t t-call="account_reports.search_template_comparison"/>
+        </div>
+        <div class="btn-group dropdown o_account_reports_filter_journals" t-if="options.get('journals') != None">
+            <t t-call="account_reports.search_template_journals"/>
+        </div>
+        <div class="btn-group dropdown o_account_reports_filter_account_type" t-if="options.get('account_type') != None">
+            <t t-call="account_reports.search_template_account_type"/>
+        </div>
+        <div class="btn-group dropdown o_account_reports_filter_analytic" t-if="options.get('analytic') != None or options.get('analytic_tags') != None">
+            <t t-call="account_reports.search_template_analytic"/>
+        </div>
+        <div class="btn-group dropdown o_account_reports_filter_ir_filters" t-if="options.get('ir_filters') != None">
+            <t t-call="account_reports.search_template_ir_filters"/>
+        </div>
+        <div class="btn-group dropdown o_account_reports_filter_groupby_fields" t-if="options.get('groupby_fields')">
+            <t t-call="account_reports.search_template_groupby_fields"/>
+        </div>
+        <div class="btn-group dropdown o_account_reports_filter_partner" t-if="options.get('partner')">
+            <t t-call="account_reports.search_template_partner"/>
+        </div>
+        <div class="btn-group dropdown o_account_reports_filter_currency" t-if="options.get('currency_rates')">
+            <t t-call="account_reports.search_template_currency"/>
+        </div>
+        <div id="extra_options_dropdown" class="btn-group dropdown o_account_reports_filter_bool" t-if="options.get('cash_basis') != None or options.get('all_entries') != None or options.get('unfold_all') != None">
+            <t t-call="account_reports.search_template_extra_options"/>
+        </div>
+        <div class="btn-group dropdown o_account_reports_filter_ec_sale_code"
+                t-if="options.get('ec_sale_code') != None">
+            <t t-call="account_reports.search_template_ec_sale_code"/>
+        </div>
+        <div id="fiscal_position_choice_option" class="btn-group dropdown o_account_reports_filter_fiscal_position"
+            t-if="len(options['available_vat_fiscal_positions']) > (0 if options['allow_domestic'] else 1)">
+            <t t-call="account_reports.search_template_fiscal_position_choser"/>
+        </div>
+        <div id="extra_options_dropdown_country" class="btn-group dropdown o_account_reports_filter_bool" t-if="options.get('filter_account_type') in ['receivable','payable']">
+            <t t-call="account_reports_country.search_template_extra_options_country"/>
+        </div>
+    </template>
+
+    </data>
+</odoo>

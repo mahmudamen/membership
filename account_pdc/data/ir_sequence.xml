@@ -1,0 +1,19 @@
+<odoo noupdate="1">
+
+    <record id="seq_account_deposit_pdc" model="ir.sequence">
+        <field name="name">Account Deposit PDC</field>
+        <field name="code">account.deposit.pdc</field>
+        <field name="prefix">PDC</field>
+        <field name="padding">5</field>
+        <field name="company_id" eval="False"/>
+    </record>
+
+    <record id="seq_account_hand_over_pdc" model="ir.sequence">
+        <field name="name">Account Hand Over PDC</field>
+        <field name="code">account.hand.over.pdc</field>
+        <field name="prefix">PDC/TRANSFER/</field>
+        <field name="padding">5</field>
+        <field name="company_id" eval="False"/>
+    </record>
+
+</odoo>

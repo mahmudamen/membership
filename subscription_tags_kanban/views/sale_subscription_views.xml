@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+######################################################################################################
+#
+# Copyright © B.H.C. sprl - All Rights Reserved, http://www.bhc.be
+#
+# Unauthorized copying of this file, via any medium is strictly prohibited
+# Proprietary and confidential
+# This code is subject to the BHC License Agreement
+# Please see the License.txt file for more information
+# All other rights reserved
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied,
+# including but not limited to the implied warranties
+# of merchantability and/or fitness for a particular purpose
+######################################################################################################
+-->
+<odoo>
+    <record id="subscription_tags_kanban" model="ir.ui.view">
+        <field name="name">sale.subscription.kanban.inherit</field>
+        <field name="model">sale.subscription</field>
+        <field name="inherit_id" ref="sale_subscription.sale_subscription_view_kanban" />
+        <field name="arch" type="xml">
+            <field name="code" position="after">
+                <field name="tag_ids" widget="many2many_tags" options="{'color_field': 'color'}"/>
+            </field>
+        </field>
+    </record>
+</odoo>

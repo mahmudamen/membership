@@ -1,0 +1,13 @@
+<odoo noupdate="1">
+
+    <record id="default_template_hand_over_pdc_config" model="ir.config_parameter">
+        <field name="key">account_pdc.default_notify_hand_over_template</field>
+        <field name="value" ref="account_pdc.hand_over_pdc_mail_template"/>
+    </record>
+
+    <record id="default_template_hand_over_reject_pdc_config" model="ir.config_parameter">
+        <field name="key">account_pdc.default_notify_hand_over_reject_template</field>
+        <field name="value" ref="account_pdc.hand_over_reject_mail_template"/>
+    </record>
+
+</odoo>

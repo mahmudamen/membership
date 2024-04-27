@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--######################################################################################################-->
+<!--#-->
+<!--# Copyright (C) B.H.C. sprl - All Rights Reserved, http://www.bhc.be-->
+<!--#-->
+<!--# This program is free software: you can redistribute it and/or modify-->
+<!--# it under the terms of the GNU Lesser General Public License as-->
+<!--# published by the Free Software Foundation, either version 3 of the-->
+<!--# License, or (at your option) any later version.-->
+<!--#-->
+<!--# Unless required by applicable law or agreed to in writing, software-->
+<!--# distributed under the License is distributed on an "AS IS" BASIS,-->
+<!--# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied,-->
+<!--# including but not limited to the implied warranties-->
+<!--# of merchantability and/or fitness for a particular purpose-->
+<!--#-->
+<!--# You should have received a copy of the GNU Lesser General Public License-->
+<!--# along with this program.  If not, see <http://www.gnu.org/licenses/>-->
+<!--######################################################################################################-->
+<odoo>
+
+
+    <data>
+        <record id="view_partner_tree_inh_18102016" model="ir.ui.view">
+            <field name="name">res.partner.tree</field>
+            <field name="model">res.partner</field>
+            <field name="inherit_id" ref="base.view_partner_tree"/>
+            <field name="arch" type="xml">
+                <field name="active" invisible="1" position="after">
+                    <field name="blacklist" invisible="True"/>
+                </field>
+                <tree position="attributes">
+                    <attribute name="decoration-danger">blacklist</attribute>
+                </tree>
+            </field>
+        </record>
+
+         <record id="view_partner_form_inh_18102016" model="ir.ui.view">
+            <field name="name">res.partner.form</field>
+            <field name="model">res.partner</field>
+            <field name="inherit_id" ref="base.view_partner_form"/>
+            <field name="arch" type="xml">
+                <field name="category_id" position="after">
+                    <field name="blacklist" invisible="True"/>
+                </field>
+            </field>
+        </record>
+
+        <record id="view_partner_category_form_inh_18102016" model="ir.ui.view">
+            <field name="name">Partner Categories</field>
+            <field name="model">res.partner.category</field>
+            <field name="inherit_id" ref="base.view_partner_category_form"/>
+            <field name="arch" type="xml">
+                <field name="parent_id" position="after">
+                    <field name="blacklist" />
+                </field>
+            </field>
+        </record>
+    </data>
+</odoo>

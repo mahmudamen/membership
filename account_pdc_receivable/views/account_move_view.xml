@@ -1,0 +1,15 @@
+<odoo>
+    <record id="view_move_pdc_receivable_form" model="ir.ui.view">
+        <field name="name">account.move.pdc.receivable.form</field>
+        <field name="model">account.move</field>
+        <field name="inherit_id" ref="account.view_move_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//group[@id='header_right_group']" position="inside">
+                <field name='is_pdc_receivable_entry' groups="base.group_no_one"/>
+            </xpath>
+            <xpath expr="//field[@name='line_ids']//field[@name='currency_id']" position="after">
+                <field name='is_pdc_receivable_entry' groups="base.group_no_one"/>
+            </xpath>
+        </field>
+    </record>
+</odoo>

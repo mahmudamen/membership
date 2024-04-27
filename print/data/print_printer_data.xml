@@ -1,0 +1,11 @@
+<?xml version="1.0"?>
+<odoo>
+  <data noupdate="1">
+
+    <!-- Default printer -->
+    <record id="default_printer" model="print.printer">
+      <field name="name">System Default Printer</field>
+    </record>
+
+  </data>
+</odoo>
